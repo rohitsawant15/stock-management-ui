@@ -1,0 +1,81 @@
+.welcome-card {
+  .welcome-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    h4 {
+      font-size: 20px;
+      font-weight: 600;
+      color: #1e3a5f;
+      margin-bottom: 6px;
+    }
+  }
+
+  .welcome-icon {
+    i {
+      font-size: 48px;
+      color: #2d6a9f;
+      opacity: 0.3;
+    }
+  }
+}
+
+.stat-card {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+
+  .stat-icon {
+    width: 52px;
+    height: 52px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+
+    i { font-size: 22px; }
+  }
+
+  .stat-info {
+    p {
+      font-size: 12px;
+      color: #6c757d;
+      margin-bottom: 2px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    h3 {
+      font-size: 24px;
+      font-weight: 700;
+      color: #1e3a5f;
+      margin: 0;
+    }
+  }
+}
+
+// Soft background colours for stat icons
+.bg-primary-soft { background: rgba(13, 110, 253, 0.1); }
+.bg-success-soft { background: rgba(25, 135, 84, 0.1); }
+.bg-warning-soft { background: rgba(255, 193, 7, 0.1); }
+.bg-info-soft    { background: rgba(13, 202, 240, 0.1); }
+.bg-danger-soft { background: rgba(220, 53, 69, 0.1); }
+
+// Disabled quick action buttons — faded, not clickable, shows tooltip on hover
+.disabled-action {
+  opacity: 0.4;
+  cursor: not-allowed;   // this gets overridden by pointer-events: none
+  user-select: none;
+  position: relative;
+
+  // Invisible overlay sits on top — it receives the cursor
+  // but doesn't trigger any click events on the anchor/button
+  &::after {
+    content: '';
+    position: absolute;
+    inset: 0;               // covers the entire button
+    cursor: not-allowed;    // shows 🚫 cursor on hover
+    border-radius: inherit; // matches button's border radius
+  }
+}

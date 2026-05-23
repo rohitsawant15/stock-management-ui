@@ -1,0 +1,40 @@
+<div class="page-card">
+
+  <div class="form-header">
+    <a routerLink="/tenants" class="btn btn-outline-secondary btn-sm me-3">
+      <i class="bi bi-arrow-left"></i>
+    </a>
+    <h5>Add New Tenant</h5>
+  </div>
+
+  <div class="alert alert-danger mt-3" *ngIf="errorMessage">
+    <i class="bi bi-exclamation-triangle me-2"></i>{{ errorMessage }}
+  </div>
+
+  <form [formGroup]="tenantForm" (ngSubmit)="onSubmit()">
+    <div class="row g-3 mt-1">
+
+      <div class="col-md-6">
+        <label class="form-label">Tenant Code <span class="text-danger">*</span></label>
+        <input type="text" class="form-control" formControlName="tenantCode" placeholder="e.g. TENANT-001" [class.is-invalid]="f['tenantCode'].invalid && f['tenantCode'].touched" />
+        <div class="invalid-feedback" *ngIf="f['tenantCode'].errors?.['required']">Tenant code is required</div>
+      </div>
+
+      <div class="col-md-6">
+        <label class="form-label">Tenant Name <span class="text-danger">*</span></label>
+        <input type="text" class="form-control" formControlName="tenantName" placeholder="e.g. Acme Corporation" [class.is-invalid]="f['tenantName'].invalid && f['tenantName'].touched" />
+        <div class="invalid-feedback" *ngIf="f['tenantName'].errors?.['required']">Tenant name is required</div>
+      </div>
+
+    </div>
+
+    <div class="form-actions mt-4">
+      <a routerLink="/tenants" class="btn btn-outline-secondary">Cancel</a>
+      <button type="submit" class="btn btn-primary" [disabled]="isLoading">
+        <span class="spinner-border spinner-border-sm me-2" *ngIf="isLoading"></span>
+        {{ isLoading ? 'Creating...' : 'Create Tenant' }}
+      </button>
+    </div>
+  </form>
+
+</div>

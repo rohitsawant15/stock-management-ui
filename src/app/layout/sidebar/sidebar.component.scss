@@ -1,0 +1,169 @@
+.sidebar {
+  width: 250px;
+  min-height: 100vh;
+  background: linear-gradient(180deg, #1e3a5f 0%, #2d6a9f 100%);
+  display: flex;
+  flex-direction: column;
+  transition: width 0.3s ease;   // smooth collapse animation
+  position: fixed;
+  left: 0;
+  top: 0;
+  z-index: 100;
+  color: white;
+
+  // Collapsed state — icon-only sidebar
+  &.collapsed {
+    width: 64px;
+
+    .sidebar-header .brand {
+      display: none;
+    }
+  }
+}
+
+// ── Header ──────────────────────────────────────
+.sidebar-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 16px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 18px;
+    font-weight: 700;
+    white-space: nowrap;
+
+    i {
+      font-size: 22px;
+      color: #7ec8f7;
+    }
+  }
+
+  .toggle-btn {
+    background: rgba(255, 255, 255, 0.1);
+    border: none;
+    color: white;
+    border-radius: 6px;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    flex-shrink: 0;
+
+    &:hover {
+      background: rgba(255, 255, 255, 0.2);
+    }
+  }
+}
+
+// ── Nav Links ────────────────────────────────────
+.sidebar-nav {
+  flex: 1;    // takes up all remaining space between header and footer
+  padding: 16px 0;
+  overflow-y: auto;
+
+  ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  a {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 20px;
+    color: rgba(255, 255, 255, 0.75);
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 500;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+
+    i {
+      font-size: 18px;
+      flex-shrink: 0;   // icon never shrinks when sidebar collapses
+      width: 20px;
+      text-align: center;
+    }
+
+    &:hover {
+      color: white;
+      background: rgba(255, 255, 255, 0.1);
+    }
+
+    // Active route — highlighted
+    &.active {
+      color: white;
+      background: rgba(255, 255, 255, 0.15);
+      border-right: 3px solid #7ec8f7;
+    }
+  }
+}
+
+// ── Footer ───────────────────────────────────────
+.sidebar-footer {
+  padding: 16px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+
+  .user-info {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 12px;
+    font-size: 13px;
+    color: rgba(255, 255, 255, 0.8);
+    overflow: hidden;
+
+    i {
+      font-size: 20px;
+      flex-shrink: 0;
+    }
+
+    span {
+      font-weight: 500;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .role-badge {
+      font-size: 10px;
+      background: rgba(126, 200, 247, 0.2);
+      color: #7ec8f7;
+      padding: 2px 6px;
+      border-radius: 10px;
+      white-space: nowrap;
+    }
+  }
+
+  .logout-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    width: 100%;
+    padding: 8px 12px;
+    background: rgba(255, 255, 255, 0.1);
+    border: none;
+    border-radius: 6px;
+    color: white;
+    font-size: 13px;
+    cursor: pointer;
+    transition: background 0.2s ease;
+    white-space: nowrap;
+
+    &:hover {
+      background: rgba(220, 53, 69, 0.6);  // red tint on hover
+    }
+
+    i {
+      font-size: 16px;
+    }
+  }
+}

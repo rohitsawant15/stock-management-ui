@@ -1,0 +1,57 @@
+.top-navbar {
+  height: 60px;
+  background: white;
+  border-bottom: 1px solid #e9ecef;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 24px;
+  position: sticky;
+  top: 0;
+  z-index: 99;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
+}
+
+.page-title {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 600;
+  color: #1e3a5f;
+}
+
+.navbar-right {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.user-badge {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #555;
+
+  i {
+    font-size: 24px;
+    color: #2d6a9f;
+  }
+
+  .user-details {
+    display: flex;
+    flex-direction: column;
+    line-height: 1.2;
+  }
+
+  .user-name {
+    font-size: 14px;
+    font-weight: 600;
+    color: #333;
+  }
+
+  .user-role {
+    font-size: 11px;
+    color: #6c757d;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+}

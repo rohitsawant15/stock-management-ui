@@ -1,0 +1,52 @@
+<div class="page-card">
+
+  <div class="page-header">
+    <div>
+      <h5 class="page-title">Tenants</h5>
+      <small class="text-muted">{{ tenants.length }} total tenants</small>
+    </div>
+    <a routerLink="/tenants/new" class="btn btn-primary btn-sm">
+      <i class="bi bi-building-add me-1"></i> Add Tenant
+    </a>
+  </div>
+
+  <div class="alert alert-danger mt-3" *ngIf="errorMessage">
+    <i class="bi bi-exclamation-triangle me-2"></i>{{ errorMessage }}
+  </div>
+
+  <div class="text-center py-5" *ngIf="isLoading">
+    <div class="spinner-border text-primary"></div>
+    <p class="mt-2 text-muted">Loading tenants...</p>
+  </div>
+
+  <div class="empty-state" *ngIf="!isLoading && tenants.length === 0 && !errorMessage">
+    <i class="bi bi-building"></i>
+    <p>No tenants found</p>
+    <a routerLink="/tenants/new" class="btn btn-primary btn-sm">Add first tenant</a>
+  </div>
+
+  <div class="table-wrapper mt-3" *ngIf="!isLoading && tenants.length > 0">
+    <table class="table table-hover">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Tenant Code</th>
+          <th>Tenant Name</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let tenant of tenants; let i = index">
+          <td class="text-muted">{{ i + 1 }}</td>
+          <td><span class="badge bg-secondary">{{ tenant.tenantCode }}</span></td>
+          <td class="fw-semibold">{{ tenant.tenantName }}</td>
+          <td>
+            <span class="status-badge active" *ngIf="tenant.active">Active</span>
+            <span class="status-badge inactive" *ngIf="!tenant.active">Inactive</span>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+</div>

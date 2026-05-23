@@ -1,0 +1,54 @@
+<div class="page-card">
+
+  <div class="detail-header">
+    <a routerLink="/users" class="btn btn-outline-secondary btn-sm me-3">
+      <i class="bi bi-arrow-left"></i>
+    </a>
+    <h5>User Details</h5>
+  </div>
+
+  <div class="text-center py-5" *ngIf="isLoading">
+    <div class="spinner-border text-primary"></div>
+  </div>
+
+  <div class="alert alert-danger mt-3" *ngIf="errorMessage">
+    <i class="bi bi-exclamation-triangle me-2"></i>{{ errorMessage }}
+  </div>
+
+  <div class="detail-body mt-4" *ngIf="user && !isLoading">
+    <div class="detail-avatar">
+      <i class="bi bi-person-circle"></i>
+      <h5>{{ user.fullName }}</h5>
+      <span class="badge" [ngClass]="getRoleBadgeClass(user.role)">{{ user.role }}</span>
+    </div>
+
+    <div class="detail-grid mt-4">
+      <div class="detail-item">
+        <span class="detail-label">User ID</span>
+        <span class="detail-value"># {{ user.id }}</span>
+      </div>
+      <div class="detail-item">
+        <span class="detail-label">Username</span>
+        <span class="detail-value">{{ user.username }}</span>
+      </div>
+      <div class="detail-item">
+        <span class="detail-label">Full Name</span>
+        <span class="detail-value">{{ user.fullName }}</span>
+      </div>
+      <div class="detail-item">
+        <span class="detail-label">Email</span>
+        <span class="detail-value">{{ user.email }}</span>
+      </div>
+      <div class="detail-item">
+        <span class="detail-label">Role</span>
+        <span class="badge" [ngClass]="getRoleBadgeClass(user.role)">{{ user.role }}</span>
+      </div>
+      <div class="detail-item">
+        <span class="detail-label">Status</span>
+        <span class="status-badge active" *ngIf="user.active">Active</span>
+        <span class="status-badge inactive" *ngIf="!user.active">Inactive</span>
+      </div>
+    </div>
+  </div>
+
+</div>

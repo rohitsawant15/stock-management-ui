@@ -1,0 +1,141 @@
+<div class="dashboard-wrapper">
+
+  <!-- Welcome card -->
+  <div class="welcome-card page-card mb-4">
+    <div class="welcome-content">
+      <div>
+        <h4>Welcome back, {{ username }}! 👋</h4>
+        <p class="text-muted mb-0">
+          {{ currentDate | date:'EEEE, MMMM d, y' }}
+          &nbsp;·&nbsp; Role: <strong>{{ userRole || 'Loading...' }}</strong>
+        </p>
+      </div>
+      <div class="welcome-icon">
+        <i class="bi bi-boxes"></i>
+      </div>
+    </div>
+  </div>
+
+  <!-- Error -->
+  <div class="alert alert-danger" *ngIf="errorMessage">
+    <i class="bi bi-exclamation-triangle me-2"></i>{{ errorMessage }}
+  </div>
+
+  <!-- Stat Cards -->
+  <div class="row g-3 mb-4">
+
+    <div class="col-md-3">
+      <div class="stat-card page-card">
+        <div class="stat-icon bg-primary-soft">
+          <i class="bi bi-box-seam text-primary"></i>
+        </div>
+        <div class="stat-info">
+          <p>Total Products</p>
+          <h3 *ngIf="!isLoading">{{ summary?.totalProducts ?? '—' }}</h3>
+          <div class="spinner-border spinner-border-sm text-primary" *ngIf="isLoading"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-3">
+      <div class="stat-card page-card">
+        <div class="stat-icon bg-success-soft">
+          <i class="bi bi-arrow-up-circle text-success"></i>
+        </div>
+        <div class="stat-info">
+          <p>Stock Added</p>
+          <h3 *ngIf="!isLoading">{{ summary?.totalStockAdds ?? '—' }}</h3>
+          <div class="spinner-border spinner-border-sm text-success" *ngIf="isLoading"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-3">
+      <div class="stat-card page-card">
+        <div class="stat-icon bg-warning-soft">
+          <i class="bi bi-arrow-down-circle text-warning"></i>
+        </div>
+        <div class="stat-info">
+          <p>Stock Reduced</p>
+          <h3 *ngIf="!isLoading">{{ summary?.totalStockReduces ?? '—' }}</h3>
+          <div class="spinner-border spinner-border-sm text-warning" *ngIf="isLoading"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-3">
+      <div class="stat-card page-card">
+        <div class="stat-icon bg-danger-soft">
+          <i class="bi bi-exclamation-triangle text-danger"></i>
+        </div>
+        <div class="stat-info">
+          <p>Low Stock Items</p>
+          <h3 *ngIf="!isLoading">{{ summary?.lowStockProducts ?? '—' }}</h3>
+          <div class="spinner-border spinner-border-sm text-danger" *ngIf="isLoading"></div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Total Users card + Quick links -->
+  <div class="row g-3">
+
+    <div class="col-md-3">
+      <div class="stat-card page-card">
+        <div class="stat-icon bg-info-soft">
+          <i class="bi bi-people text-info"></i>
+        </div>
+        <div class="stat-info">
+          <p>Total Users</p>
+          <h3 *ngIf="!isLoading">{{ summary?.totalUsers ?? '—' }}</h3>
+          <div class="spinner-border spinner-border-sm text-info" *ngIf="isLoading"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-9">
+      <div class="page-card h-100">
+        <h6 class="mb-3">Quick Actions</h6>
+        <div class="d-flex gap-2 flex-wrap">
+       <!-- View Products — always accessible -->
+    <a routerLink="/products" class="btn btn-outline-primary btn-sm">
+      <i class="bi bi-box-seam me-1"></i> View Products
+    </a>
+          <span
+      class="btn btn-outline-success btn-sm disabled-action"
+      *ngIf="!canAddStock"
+      title="Your role ({{ userRole }}) cannot perform stock operations"
+    >
+      <i class="bi bi-plus-circle me-1"></i> Add Stock
+    </span>
+    <a routerLink="/stock" class="btn btn-outline-success btn-sm" *ngIf="canAddStock">
+      <i class="bi bi-plus-circle me-1"></i> Add Stock
+    </a>
+          <span
+      class="btn btn-outline-secondary btn-sm disabled-action"
+      *ngIf="!canViewHistory"
+      title="Your role ({{ userRole }}) cannot view stock history"
+    >
+      <i class="bi bi-clock-history me-1"></i> Stock History
+    </span>
+    <a routerLink="/stock/history" class="btn btn-outline-secondary btn-sm" *ngIf="canViewHistory">
+      <i class="bi bi-clock-history me-1"></i> Stock History
+    </a>
+           <span
+      class="btn btn-outline-info btn-sm disabled-action"
+      *ngIf="!canManageUsers"
+      title="Your role ({{ userRole }}) cannot manage users"
+    >
+      <i class="bi bi-people me-1"></i> Manage Users
+    </span>
+    <a routerLink="/users" class="btn btn-outline-info btn-sm" *ngIf="canManageUsers">
+      <i class="bi bi-people me-1"></i> Manage Users
+    </a>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+</div>

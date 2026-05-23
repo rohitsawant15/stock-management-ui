@@ -1,1 +1,124 @@
-/* You can add global styles to this file, and also import other style files */
+/* ── Global resets ───────────────────────────────── */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #f4f6f9;
+  color: #333;
+}
+
+a {
+  transition: color 0.2s ease, background-color 0.2s ease;
+}
+
+/* ── Bootstrap table override ────────────────────── */
+.table th {
+  background-color: #f8f9fa;
+  font-weight: 600;
+}
+
+/* ── Page card ───────────────────────────────────── */
+.page-card {
+  background: white;
+  border-radius: 8px;
+  padding: 24px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+}
+
+/* ── Global styled select dropdown ──────────────── */
+/* Applies to every <select class="form-select"> in the app */
+.form-select {
+  border: 1.5px solid #dee2e6;
+  border-radius: 8px;
+  padding: 10px 40px 10px 14px;
+  font-size: 14px;
+  color: #333;
+  background-color: #fff;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 16 16'%3E%3Cpath fill='%232d6a9f' d='M7.247 11.14L2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 14px center;
+  appearance: none;
+  -webkit-appearance: none;
+  cursor: pointer;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  width: 100%;
+
+  &:focus {
+    outline: none;
+    border-color: #2d6a9f;
+    box-shadow: 0 0 0 3px rgba(45, 106, 159, 0.15);
+  }
+
+  &:hover:not(:disabled) {
+    border-color: #2d6a9f;
+  }
+
+  &:disabled {
+    background-color: #f8f9fa;
+    color: #adb5bd;
+    cursor: not-allowed;
+  }
+
+  /* Placeholder option */
+  option[value=""] {
+    color: #adb5bd;
+  }
+
+  option {
+    color: #333;
+    padding: 8px;
+    font-size: 14px;
+  }
+}
+
+/* Invalid state for select */
+.form-select.is-invalid {
+  border-color: #dc3545;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 16 16'%3E%3Cpath fill='%23dc3545' d='M7.247 11.14L2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/%3E%3C/svg%3E");
+
+  &:focus {
+    border-color: #dc3545;
+    box-shadow: 0 0 0 3px rgba(220, 53, 69, 0.15);
+  }
+}
+
+/* ── Global form-control styling ─────────────────── */
+.form-control {
+  border: 1.5px solid #dee2e6;
+  border-radius: 8px;
+  padding: 10px 14px;
+  font-size: 14px;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+
+  &:focus {
+    outline: none;
+    border-color: #2d6a9f;
+    box-shadow: 0 0 0 3px rgba(45, 106, 159, 0.15);
+  }
+
+  &.is-invalid {
+    border-color: #dc3545;
+
+    &:focus {
+      box-shadow: 0 0 0 3px rgba(220, 53, 69, 0.15);
+    }
+  }
+}
+
+/* ── Global button overrides ─────────────────────── */
+.btn {
+  border-radius: 8px;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.btn-primary {
+  background-color: #2d6a9f;
+  border-color: #2d6a9f;
+
+  &:hover { background-color: #1e3a5f; border-color: #1e3a5f; }
+}

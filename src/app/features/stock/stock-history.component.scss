@@ -1,0 +1,95 @@
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.page-title {
+  font-size: 20px;
+  font-weight: 600;
+  color: #1e3a5f;
+  margin-bottom: 2px;
+}
+
+// ── Summary Cards ─────────────────────────────────
+.summary-row {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.summary-card {
+  flex: 1;
+  min-width: 120px;
+  border-radius: 10px;
+  padding: 14px 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+
+  .summary-label {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-weight: 600;
+    opacity: 0.75;
+  }
+
+  .summary-value {
+    font-size: 24px;
+    font-weight: 700;
+  }
+
+  &.total  { background: #e8f0fe; color: #1a56db; }
+  &.add    { background: #d1fae5; color: #065f46; }
+  &.reduce { background: #fee2e2; color: #991b1b; }
+  &.stock  { background: #fef3c7; color: #92400e; }
+}
+
+// ── Table ─────────────────────────────────────────
+.table-wrapper {
+  overflow-x: auto;
+}
+
+.datetime {
+  font-size: 13px;
+  color: #555;
+  white-space: nowrap;
+}
+
+// Operation type badges
+.op-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px 10px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 600;
+
+  &.add    { background: #d1fae5; color: #065f46; }
+  &.reduce { background: #fee2e2; color: #991b1b; }
+}
+
+// Change amount badge (+10 or -5)
+.change-badge {
+  font-weight: 700;
+  font-size: 14px;
+
+  &.positive { color: #146c43; }
+  &.negative { color: #dc3545; }
+}
+
+// ── Empty State ───────────────────────────────────
+.empty-state {
+  text-align: center;
+  padding: 60px 20px;
+  color: #adb5bd;
+
+  i {
+    font-size: 48px;
+    display: block;
+    margin-bottom: 12px;
+  }
+
+  p { font-size: 15px; margin: 0; }
+}

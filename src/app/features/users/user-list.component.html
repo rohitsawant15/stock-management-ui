@@ -1,0 +1,66 @@
+<div class="page-card">
+
+  <div class="page-header">
+    <div>
+      <h5 class="page-title">Users</h5>
+      <small class="text-muted">{{ users.length }} total users</small>
+    </div>
+    <!-- Only show Register button if user has ADMIN or SUPER_ADMIN role -->
+<a routerLink="/users/register" class="btn btn-primary btn-sm" *ngIf="canRegister">
+  <i class="bi bi-person-plus me-1"></i> Register User
+</a>
+  </div>
+
+  <div class="alert alert-danger mt-3" *ngIf="errorMessage">
+    <i class="bi bi-exclamation-triangle me-2"></i>{{ errorMessage }}
+  </div>
+
+  <!-- Loading -->
+  <div class="text-center py-5" *ngIf="isLoading">
+    <div class="spinner-border text-primary"></div>
+    <p class="mt-2 text-muted">Loading users...</p>
+  </div>
+
+  <!-- Empty -->
+  <div class="empty-state" *ngIf="!isLoading && users.length === 0">
+    <i class="bi bi-people"></i>
+    <p>No users found</p>
+    <a routerLink="/users/register" class="btn btn-primary btn-sm">Register first user</a>
+  </div>
+
+  <!-- Table -->
+  <div class="table-wrapper mt-3" *ngIf="!isLoading && users.length > 0">
+    <table class="table table-hover">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Full Name</th>
+          <th>Username</th>
+          <th>Email</th>
+          <th>Role</th>
+          <th>Status</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let user of users; let i = index">
+          <td class="text-muted">{{ i + 1 }}</td>
+          <td class="fw-semibold">{{ user.fullName }}</td>
+          <td><span class="badge bg-secondary">{{ user.username }}</span></td>
+          <td class="text-muted">{{ user.email }}</td>
+          <td><span class="badge" [ngClass]="getRoleBadgeClass(user.role)">{{ user.role }}</span></td>
+          <td>
+            <span class="status-badge active" *ngIf="user.active">Active</span>
+            <span class="status-badge inactive" *ngIf="!user.active">Inactive</span>
+          </td>
+          <td>
+            <a [routerLink]="['/users', user.id]" class="btn btn-outline-primary btn-xs" title="View Details">
+              <i class="bi bi-eye"></i>
+            </a>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+</div>

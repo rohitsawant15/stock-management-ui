@@ -1,0 +1,75 @@
+<div class="page-card">
+
+  <div class="form-header">
+    <a routerLink="/users" class="btn btn-outline-secondary btn-sm me-3">
+      <i class="bi bi-arrow-left"></i>
+    </a>
+    <h5>Register New User</h5>
+  </div>
+
+  <div class="alert alert-success mt-3" *ngIf="successMessage">
+    <i class="bi bi-check-circle me-2"></i>{{ successMessage }}
+  </div>
+  <div class="alert alert-danger mt-3" *ngIf="errorMessage">
+    <i class="bi bi-exclamation-triangle me-2"></i>{{ errorMessage }}
+  </div>
+
+  <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
+    <div class="row g-3 mt-1">
+
+      <div class="col-md-6">
+        <label class="form-label">Full Name <span class="text-danger">*</span></label>
+        <input type="text" class="form-control" formControlName="fullName" placeholder="e.g. John Doe" [class.is-invalid]="f['fullName'].invalid && f['fullName'].touched" />
+        <div class="invalid-feedback" *ngIf="f['fullName'].errors?.['required']">Full name is required</div>
+      </div>
+
+      <div class="col-md-6">
+        <label class="form-label">Email <span class="text-danger">*</span></label>
+        <input type="email" class="form-control" formControlName="email" placeholder="e.g. john@example.com" [class.is-invalid]="f['email'].invalid && f['email'].touched" />
+        <div class="invalid-feedback" *ngIf="f['email'].errors?.['required']">Email is required</div>
+        <div class="invalid-feedback" *ngIf="f['email'].errors?.['email']">Enter a valid email</div>
+      </div>
+
+      <div class="col-md-6">
+        <label class="form-label">Username <span class="text-danger">*</span></label>
+        <input type="text" class="form-control" formControlName="username" placeholder="e.g. johndoe" [class.is-invalid]="f['username'].invalid && f['username'].touched" />
+        <div class="invalid-feedback" *ngIf="f['username'].errors?.['required']">Username is required</div>
+      </div>
+
+      <div class="col-md-6">
+        <label class="form-label">Password <span class="text-danger">*</span></label>
+        <input type="password" class="form-control" formControlName="password" placeholder="Min 6 characters" [class.is-invalid]="f['password'].invalid && f['password'].touched" />
+        <div class="invalid-feedback" *ngIf="f['password'].errors?.['required']">Password is required</div>
+        <div class="invalid-feedback" *ngIf="f['password'].errors?.['minlength']">Minimum 6 characters</div>
+      </div>
+
+      <div class="col-md-6">
+        <label class="form-label">Role <span class="text-danger">*</span></label>
+        <select class="form-select" formControlName="role" [class.is-invalid]="f['role'].invalid && f['role'].touched">
+          <option value="">-- Select role --</option>
+          <option *ngFor="let role of availableRoles" [value]="role">{{ role }}</option>
+        </select>
+        <div class="invalid-feedback" *ngIf="f['role'].errors?.['required']">Role is required</div>
+      </div>
+
+      <div class="col-md-6" *ngIf="isSuperAdmin">
+        <label class="form-label">Tenant <span class="text-danger">*</span></label>
+        <select class="form-select" formControlName="tenantId" [class.is-invalid]="f['tenantId'].invalid && f['tenantId'].touched">
+          <option value="">-- Select tenant --</option>
+          <option *ngFor="let tenant of tenants" [value]="tenant.id">{{ tenant.tenantName }} ({{ tenant.tenantCode }})</option>
+        </select>
+        <div class="invalid-feedback" *ngIf="f['tenantId'].errors?.['required']">Tenant is required</div>
+      </div>
+
+    </div>
+
+    <div class="form-actions mt-4">
+      <a routerLink="/users" class="btn btn-outline-secondary">Cancel</a>
+      <button type="submit" class="btn btn-primary" [disabled]="isLoading">
+        <span class="spinner-border spinner-border-sm me-2" *ngIf="isLoading"></span>
+        {{ isLoading ? 'Registering...' : 'Register User' }}
+      </button>
+    </div>
+  </form>
+
+</div>

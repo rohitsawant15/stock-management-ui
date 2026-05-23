@@ -1,0 +1,158 @@
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.page-title {
+  font-size: 20px;
+  font-weight: 600;
+  color: #1e3a5f;
+  margin-bottom: 2px;
+}
+
+// ── Operation Tabs ────────────────────────────────
+.operation-tabs {
+  display: flex;
+  gap: 8px;
+  border-bottom: 2px solid #e9ecef;
+  padding-bottom: 0;
+}
+
+.tab-btn {
+  padding: 10px 24px;
+  border: none;
+  background: none;
+  color: #6c757d;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  border-bottom: 3px solid transparent;
+  margin-bottom: -2px;   // overlap the border-bottom of parent
+  border-radius: 4px 4px 0 0;
+  transition: all 0.2s ease;
+
+  &:hover {
+    color: #1e3a5f;
+    background: #f8f9fa;
+  }
+
+  &.active {
+    color: #2d6a9f;
+    border-bottom-color: #2d6a9f;
+    background: none;
+  }
+}
+
+// ── Form ─────────────────────────────────────────
+.form-section-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: #1e3a5f;
+  margin-bottom: 4px;
+}
+
+.form-label {
+  font-weight: 500;
+  color: #444;
+}
+
+// ── Success message extras ───────────────────────
+.updated-qty {
+  font-size: 13px;
+  color: #155724;
+}
+
+.qty-highlight {
+  font-weight: 700;
+  font-size: 15px;
+  color: #146c43;
+}
+
+// ── Product Preview Card ──────────────────────────
+.product-preview {
+  height: fit-content;
+
+  .preview-title {
+    font-weight: 600;
+    color: #1e3a5f;
+    margin-bottom: 16px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid #e9ecef;
+  }
+
+  .preview-body {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .preview-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 14px;
+  }
+
+  .preview-label {
+    color: #6c757d;
+    font-size: 13px;
+  }
+
+  .preview-value {
+    color: #333;
+    font-weight: 500;
+  }
+}
+
+// Stock quantity badges in preview
+.stock-qty {
+  font-weight: 700;
+  font-size: 15px;
+  padding: 2px 10px;
+  border-radius: 12px;
+
+  &.low    { background: #fde8e8; color: #dc3545; }
+  &.medium { background: #fff3cd; color: #856404; }
+  &.high   { background: #d1e7dd; color: #146c43; }
+}
+
+// ── Projection box ────────────────────────────────
+.projection {
+  background: #f8f9fa;
+  border-radius: 8px;
+  padding: 12px 16px;
+
+  .projection-row {
+    display: flex;
+    justify-content: space-between;
+    font-size: 14px;
+    color: #555;
+
+    strong { font-size: 16px; }
+
+    &.after strong { font-size: 20px; }
+  }
+
+  .projection-arrow {
+    text-align: center;
+    color: #adb5bd;
+    font-size: 12px;
+    margin: 4px 0;
+  }
+}
+
+// ── Empty preview ─────────────────────────────────
+.empty-preview {
+  text-align: center;
+  padding: 48px 20px;
+  color: #adb5bd;
+
+  i {
+    font-size: 48px;
+    display: block;
+    margin-bottom: 12px;
+  }
+
+  p { font-size: 14px; margin: 0; }
+}

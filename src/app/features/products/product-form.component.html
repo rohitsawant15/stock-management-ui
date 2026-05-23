@@ -1,0 +1,123 @@
+<div class="page-card">
+
+  <!-- Header -->
+  <div class="form-header">
+    <a routerLink="/products" class="btn btn-outline-secondary btn-sm me-3">
+      <i class="bi bi-arrow-left"></i>
+    </a>
+    <h5>{{ isEditMode ? 'Edit Product' : 'Add New Product' }}</h5>
+  </div>
+
+  <!-- Loading spinner while fetching product for edit -->
+  <div class="text-center py-5" *ngIf="isFetching">
+    <div class="spinner-border text-primary"></div>
+    <p class="mt-2 text-muted">Loading product details...</p>
+  </div>
+
+  <!-- Error -->
+  <div class="alert alert-danger mt-3" *ngIf="errorMessage">
+    <i class="bi bi-exclamation-triangle me-2"></i>{{ errorMessage }}
+  </div>
+
+  <!-- Form -->
+  <form [formGroup]="productForm" (ngSubmit)="onSubmit()" *ngIf="!isFetching">
+    <div class="row g-3 mt-1">
+
+      <!-- Product Code -->
+      <div class="col-md-6">
+        <label class="form-label">Product Code <span class="text-danger">*</span></label>
+        <input
+          type="text"
+          class="form-control"
+          formControlName="productCode"
+          placeholder="e.g. PROD-001"
+          [class.is-invalid]="f['productCode'].invalid && f['productCode'].touched"
+        />
+        <div class="invalid-feedback" *ngIf="f['productCode'].errors?.['required']">
+          Product code is required
+        </div>
+      </div>
+
+      <!-- Product Name -->
+      <div class="col-md-6">
+        <label class="form-label">Product Name <span class="text-danger">*</span></label>
+        <input
+          type="text"
+          class="form-control"
+          formControlName="productName"
+          placeholder="e.g. Laptop Pro"
+          [class.is-invalid]="f['productName'].invalid && f['productName'].touched"
+        />
+        <div class="invalid-feedback" *ngIf="f['productName'].errors?.['required']">
+          Product name is required
+        </div>
+      </div>
+
+      <!-- Product Type -->
+      <div class="col-md-6">
+        <label class="form-label">Product Type</label>
+        <input
+          type="text"
+          class="form-control"
+          formControlName="productType"
+          placeholder="e.g. Electronics (optional)"
+        />
+      </div>
+
+      <!-- Rate -->
+      <div class="col-md-3">
+        <label class="form-label">Rate (₹) <span class="text-danger">*</span></label>
+        <input
+          type="number"
+          class="form-control"
+          formControlName="rate"
+          placeholder="0.00"
+          min="0"
+          step="0.01"
+          [class.is-invalid]="f['rate'].invalid && f['rate'].touched"
+        />
+        <div class="invalid-feedback" *ngIf="f['rate'].errors?.['required']">Rate is required</div>
+        <div class="invalid-feedback" *ngIf="f['rate'].errors?.['min']">Rate must be 0 or more</div>
+      </div>
+
+      <!-- Volume -->
+      <div class="col-md-3">
+        <label class="form-label">Volume</label>
+        <input
+          type="number"
+          class="form-control"
+          formControlName="volume"
+          placeholder="optional"
+          min="0"
+          step="0.01"
+        />
+      </div>
+
+      <!-- Quantity -->
+      <div class="col-md-3">
+        <label class="form-label">Quantity <span class="text-danger">*</span></label>
+        <input
+          type="number"
+          class="form-control"
+          formControlName="quantity"
+          placeholder="0"
+          min="0"
+          [class.is-invalid]="f['quantity'].invalid && f['quantity'].touched"
+        />
+        <div class="invalid-feedback" *ngIf="f['quantity'].errors?.['required']">Quantity is required</div>
+        <div class="invalid-feedback" *ngIf="f['quantity'].errors?.['min']">Quantity must be 0 or more</div>
+      </div>
+
+    </div>
+
+    <!-- Form Actions -->
+    <div class="form-actions mt-4">
+      <a routerLink="/products" class="btn btn-outline-secondary">Cancel</a>
+      <button type="submit" class="btn btn-primary" [disabled]="isLoading">
+        <span class="spinner-border spinner-border-sm me-2" *ngIf="isLoading"></span>
+        {{ isLoading ? 'Saving...' : (isEditMode ? 'Update Product' : 'Create Product') }}
+      </button>
+    </div>
+  </form>
+
+</div>

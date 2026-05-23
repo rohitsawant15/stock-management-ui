@@ -1,0 +1,52 @@
+.detail-header {
+  display: flex;
+  align-items: center;
+  h5 { font-size: 20px; font-weight: 600; color: #1e3a5f; margin: 0; }
+}
+
+.detail-avatar {
+  text-align: center;
+  padding: 24px 0 16px;
+  border-bottom: 1px solid #e9ecef;
+
+  i { font-size: 64px; color: #2d6a9f; display: block; margin-bottom: 8px; }
+  h5 { font-size: 20px; font-weight: 600; margin-bottom: 8px; }
+}
+
+.detail-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+.detail-item {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.detail-label {
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: #6c757d;
+  font-weight: 600;
+}
+
+.detail-value {
+  font-size: 15px;
+  color: #333;
+  font-weight: 500;
+}
+
+.status-badge {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 600;
+  width: fit-content;
+
+  &.active   { background: #d1fae5; color: #065f46; }
+  &.inactive { background: #fee2e2; color: #991b1b; }
+}

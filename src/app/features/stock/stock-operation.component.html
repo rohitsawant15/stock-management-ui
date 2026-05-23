@@ -1,0 +1,153 @@
+<div class="stock-page">
+
+  <!-- Page Header -->
+  <div class="page-card mb-4">
+    <div class="page-header">
+      <div>
+        <h5 class="page-title">Stock Operations</h5>
+        <small class="text-muted">Add or reduce product stock levels</small>
+      </div>
+      <a routerLink="/stock/history" class="btn btn-outline-secondary btn-sm">
+        <i class="bi bi-clock-history me-1"></i> View History
+      </a>
+    </div>
+
+    <!-- Operation Tabs -->
+    <div class="operation-tabs mt-4">
+      <button class="tab-btn" [class.active]="activeOperation === 'ADD'" (click)="setOperation('ADD')">
+        <i class="bi bi-plus-circle me-2"></i> Add Stock
+      </button>
+      <button class="tab-btn" [class.active]="activeOperation === 'REDUCE'" (click)="setOperation('REDUCE')">
+        <i class="bi bi-dash-circle me-2"></i> Reduce Stock
+      </button>
+    </div>
+  </div>
+
+  <div class="row g-4">
+
+    <!-- Left: Operation Form -->
+    <div class="col-md-7">
+      <div class="page-card">
+
+        <h6 class="form-section-title">
+          <i class="bi bi-plus-circle text-success me-2" *ngIf="activeOperation === 'ADD'"></i>
+          <i class="bi bi-dash-circle text-danger me-2" *ngIf="activeOperation === 'REDUCE'"></i>
+          {{ activeOperation === 'ADD' ? 'Add Stock' : 'Reduce Stock' }}
+        </h6>
+
+        <!-- Success Alert -->
+        <div class="alert alert-success mt-3" *ngIf="successMessage">
+          <i class="bi bi-check-circle-fill me-2"></i>{{ successMessage }}
+          <div class="updated-qty mt-2" *ngIf="updatedProduct">
+            New quantity for <strong>{{ updatedProduct.productName }}</strong>:
+            <span class="qty-highlight">{{ updatedProduct.quantity }} units</span>
+          </div>
+        </div>
+
+        <!-- Error Alert -->
+        <div class="alert alert-danger mt-3" *ngIf="errorMessage">
+          <i class="bi bi-exclamation-triangle-fill me-2"></i>{{ errorMessage }}
+        </div>
+
+        <!-- Stock Form -->
+        <form [formGroup]="stockForm" (ngSubmit)="onSubmit()" class="mt-3">
+
+          <!-- Custom Product Dropdown -->
+          <div class="mb-3">
+            <label class="form-label">Select Product <span class="text-danger">*</span></label>
+            <app-searchable-dropdown
+              [options]="productOptions"
+              [value]="stockForm.value.productId"
+              [loading]="isLoadingProducts"
+              placeholder="-- Select a product --"
+              (valueChange)="onProductSelected($event)"
+            ></app-searchable-dropdown>
+            <div class="invalid-hint" *ngIf="f['productId'].invalid && f['productId'].touched">
+              <i class="bi bi-exclamation-circle me-1"></i> Please select a product
+            </div>
+          </div>
+
+          <!-- Quantity -->
+          <div class="mb-4">
+            <label class="form-label">
+              Quantity to {{ activeOperation === 'ADD' ? 'Add' : 'Reduce' }}
+              <span class="text-danger">*</span>
+            </label>
+            <input type="number" class="form-control" formControlName="quantity" placeholder="Enter quantity (min 1)" min="1" [class.is-invalid]="f['quantity'].invalid && f['quantity'].touched" />
+            <div class="invalid-feedback" *ngIf="f['quantity'].errors?.['required']">Quantity is required</div>
+            <div class="invalid-feedback" *ngIf="f['quantity'].errors?.['min']">Quantity must be at least 1</div>
+          </div>
+
+          <!-- Submit Button -->
+          <button type="submit" class="btn w-100" [class.btn-success]="activeOperation === 'ADD'" [class.btn-danger]="activeOperation === 'REDUCE'" [disabled]="isSubmitting">
+            <span class="spinner-border spinner-border-sm me-2" *ngIf="isSubmitting"></span>
+            <i class="bi bi-plus-circle me-2" *ngIf="!isSubmitting && activeOperation === 'ADD'"></i>
+            <i class="bi bi-dash-circle me-2" *ngIf="!isSubmitting && activeOperation === 'REDUCE'"></i>
+            {{ isSubmitting ? 'Processing...' : (activeOperation === 'ADD' ? 'Add Stock' : 'Reduce Stock') }}
+          </button>
+
+        </form>
+      </div>
+    </div>
+
+    <!-- Right: Selected Product Preview -->
+    <div class="col-md-5">
+      <div class="page-card product-preview" *ngIf="selectedProduct">
+        <h6 class="preview-title">Selected Product</h6>
+        <div class="preview-body">
+          <div class="preview-row">
+            <span class="preview-label">Name</span>
+            <span class="preview-value">{{ selectedProduct.productName }}</span>
+          </div>
+          <div class="preview-row">
+            <span class="preview-label">Code</span>
+            <span class="badge bg-secondary">{{ selectedProduct.productCode }}</span>
+          </div>
+          <div class="preview-row">
+            <span class="preview-label">Type</span>
+            <span class="preview-value">{{ selectedProduct.productType || '—' }}</span>
+          </div>
+          <div class="preview-row">
+            <span class="preview-label">Rate</span>
+            <span class="preview-value fw-semibold">{{ selectedProduct.rate | currency:'INR':'symbol':'1.2-2' }}</span>
+          </div>
+          <div class="preview-row">
+            <span class="preview-label">Current Stock</span>
+            <span class="stock-qty low" *ngIf="selectedProduct.quantity < 10">{{ selectedProduct.quantity }} units</span>
+            <span class="stock-qty medium" *ngIf="selectedProduct.quantity >= 10 && selectedProduct.quantity < 50">{{ selectedProduct.quantity }} units</span>
+            <span class="stock-qty high" *ngIf="selectedProduct.quantity >= 50">{{ selectedProduct.quantity }} units</span>
+          </div>
+        </div>
+
+        <!-- Projection -->
+        <div class="projection mt-3" *ngIf="stockForm.value.quantity && stockForm.value.quantity > 0">
+          <div class="projection-row">
+            <span>Current</span>
+            <strong>{{ selectedProduct.quantity }}</strong>
+          </div>
+          <div class="projection-arrow">
+            <i class="bi bi-arrow-down"></i>
+          </div>
+          <div class="projection-row after">
+            <span>After {{ activeOperation === 'ADD' ? 'Adding' : 'Reducing' }}</span>
+            <strong [class.text-success]="activeOperation === 'ADD'" [class.text-danger]="activeOperation === 'REDUCE'">
+              {{ activeOperation === 'ADD'
+                ? selectedProduct.quantity + +stockForm.value.quantity
+                : selectedProduct.quantity - +stockForm.value.quantity }}
+            </strong>
+          </div>
+          <small class="text-danger d-block mt-1" *ngIf="activeOperation === 'REDUCE' && (selectedProduct.quantity - +stockForm.value.quantity) < 0">
+            <i class="bi bi-exclamation-triangle me-1"></i> Quantity cannot go below 0
+          </small>
+        </div>
+      </div>
+
+      <!-- Empty preview -->
+      <div class="page-card product-preview empty-preview" *ngIf="!selectedProduct">
+        <i class="bi bi-box-seam"></i>
+        <p>Select a product to see details</p>
+      </div>
+    </div>
+
+  </div>
+</div>

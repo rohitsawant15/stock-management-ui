@@ -1,0 +1,28 @@
+.app-shell {
+  display: flex;
+  min-height: 100vh;
+}
+
+.main-content {
+  // Push content right by the sidebar width
+  margin-left: 250px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  transition: margin-left 0.3s ease;  // matches sidebar collapse animation
+  min-width: 0;  // prevents flex child overflow issues
+}
+
+.main-content.expanded {
+  margin-left: 64px;
+}
+
+:host-context(.sidebar.collapsed) ~ .main-content {
+  margin-left: 64px;
+}
+
+.page-content {
+  flex: 1;
+  padding: 24px;
+  background-color: #f4f6f9;
+}

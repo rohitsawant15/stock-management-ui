@@ -1,0 +1,168 @@
+<div class="page-card">
+
+  <!-- Page Header -->
+  <div class="page-header">
+    <div>
+      <h5 class="page-title">Products</h5>
+      <small class="text-muted">{{ totalElements }} total products</small>
+    </div>
+    <div class="header-actions">
+     <button class="btn btn-outline-success btn-sm" *ngIf="canExport" (click)="exportToCsv()" [disabled]="isExporting">
+    <span class="spinner-border spinner-border-sm me-1" *ngIf="isExporting"></span>
+    <i class="bi bi-download me-1" *ngIf="!isExporting"></i>
+    {{ isExporting ? 'Exporting...' : 'Export CSV' }}
+  </button>
+      <button class="btn btn-outline-secondary btn-sm" (click)="showFilterPanel = !showFilterPanel" [class.active]="isFiltering">
+        <i class="bi bi-funnel me-1"></i> Filter
+        <span class="badge bg-primary ms-1" *ngIf="isFiltering">ON</span>
+      </button>
+      <a *ngIf="canCreate" routerLink="/products/new" class="btn btn-primary btn-sm">
+        <i class="bi bi-plus-lg me-1"></i> Add Product
+      </a>
+    </div>
+  </div>
+
+  <!-- Success / Error Alerts -->
+  <div class="alert alert-success mt-3" *ngIf="successMessage">
+    <i class="bi bi-check-circle me-2"></i>{{ successMessage }}
+  </div>
+  <div class="alert alert-danger mt-3" *ngIf="errorMessage">
+    <i class="bi bi-exclamation-triangle me-2"></i>{{ errorMessage }}
+  </div>
+
+  <!-- Search Bar -->
+  <div class="search-bar mt-3">
+    <div class="input-group">
+      <span class="input-group-text"><i class="bi bi-search"></i></span>
+      <input type="text" class="form-control" placeholder="Search by product name or code..." [(ngModel)]="searchKeyword" (keyup.enter)="onSearch()" />
+      <button class="btn btn-primary" (click)="onSearch()">Search</button>
+      <button class="btn btn-outline-secondary" *ngIf="isSearching" (click)="clearSearch()">
+        <i class="bi bi-x"></i> Clear
+      </button>
+    </div>
+  </div>
+
+  <!-- Filter Panel -->
+  <div class="filter-panel mt-3" *ngIf="showFilterPanel">
+    <div class="filter-panel-inner">
+      <h6>Filter Products</h6>
+      <div class="row g-2">
+        <div class="col-md-3">
+          <label class="form-label">Product Name</label>
+          <input type="text" class="form-control form-control-sm" [(ngModel)]="filterProductName" placeholder="e.g. Laptop" />
+        </div>
+        <div class="col-md-3">
+          <label class="form-label">Product Type</label>
+          <input type="text" class="form-control form-control-sm" [(ngModel)]="filterProductType" placeholder="e.g. Electronics" />
+        </div>
+        <div class="col-md-2">
+          <label class="form-label">Min Rate</label>
+          <input type="number" class="form-control form-control-sm" [(ngModel)]="filterMinRate" placeholder="0" />
+        </div>
+        <div class="col-md-2">
+          <label class="form-label">Max Rate</label>
+          <input type="number" class="form-control form-control-sm" [(ngModel)]="filterMaxRate" placeholder="99999" />
+        </div>
+        <div class="col-md-2 d-flex align-items-end gap-2">
+          <button class="btn btn-primary btn-sm" (click)="applyFilter()">Apply</button>
+          <button class="btn btn-outline-secondary btn-sm" (click)="clearFilter()">Reset</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Table Wrapper -->
+  <div class="table-wrapper mt-3">
+
+    <!-- Loading -->
+    <div class="text-center py-5" *ngIf="isLoading">
+      <div class="spinner-border text-primary"></div>
+      <p class="mt-2 text-muted">Loading products...</p>
+    </div>
+
+    <!-- Empty State -->
+    <div class="empty-state" *ngIf="!isLoading && products.length === 0">
+      <i class="bi bi-box-seam"></i>
+      <p>No products found</p>
+      <a routerLink="/products/new" class="btn btn-primary btn-sm" *ngIf="canCreate">Add your first product</a>
+    </div>
+
+    <!-- Table -->
+    <table class="table table-hover" *ngIf="!isLoading && products.length > 0">
+      <thead>
+        <tr>
+          <th class="sortable" (click)="onSort('id')"># <i class="bi bi-arrow-down-up"></i></th>
+          <th class="sortable" (click)="onSort('productCode')">Code <i class="bi bi-arrow-down-up"></i></th>
+          <th class="sortable" (click)="onSort('productName')">Name <i class="bi bi-arrow-down-up"></i></th>
+          <th>Type</th>
+          <th class="sortable" (click)="onSort('rate')">Rate <i class="bi bi-arrow-down-up"></i></th>
+          <th class="sortable" (click)="onSort('quantity')">Quantity <i class="bi bi-arrow-down-up"></i></th>
+          <th>Volume</th>
+          <th *ngIf="canEdit || canDelete">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let product of products">
+          <td>{{ product.id }}</td>
+          <td><span class="badge bg-secondary">{{ product.productCode }}</span></td>
+          <td class="product-name">{{ product.productName }}</td>
+          <td>
+            <span class="badge bg-light text-dark" *ngIf="product.productType">{{ product.productType }}</span>
+            <span class="text-muted" *ngIf="!product.productType">—</span>
+          </td>
+          <td class="fw-semibold">{{ product.rate | currency:'INR':'symbol':'1.2-2' }}</td>
+          <td>
+            <span class="quantity-badge low" *ngIf="product.quantity < 10">{{ product.quantity }}</span>
+            <span class="quantity-badge medium" *ngIf="product.quantity >= 10 && product.quantity < 50">{{ product.quantity }}</span>
+            <span class="quantity-badge high" *ngIf="product.quantity >= 50">{{ product.quantity }}</span>
+          </td>
+          <td>{{ product.volume ?? '—' }}</td>
+          <td *ngIf="canEdit || canDelete">
+            <div class="action-buttons">
+              <a *ngIf="canEdit" [routerLink]="['/products/edit', product.id]" class="btn btn-outline-primary btn-xs" title="Edit">
+                <i class="bi bi-pencil"></i>
+              </a>
+              <button *ngIf="canDelete" class="btn btn-outline-danger btn-xs" title="Delete" (click)="confirmDelete(product)">
+                <i class="bi bi-trash"></i>
+              </button>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Pagination -->
+  <div class="pagination-bar" *ngIf="totalPages > 1">
+    <span class="pagination-info">Page {{ currentPage + 1 }} of {{ totalPages }}</span>
+    <nav>
+      <ul class="pagination pagination-sm mb-0">
+        <li class="page-item" [class.disabled]="currentPage === 0">
+          <button class="page-link" (click)="goToPage(currentPage - 1)"><i class="bi bi-chevron-left"></i></button>
+        </li>
+        <li class="page-item" *ngFor="let p of pageNumbers" [class.active]="p === currentPage">
+          <button class="page-link" (click)="goToPage(p)">{{ p + 1 }}</button>
+        </li>
+        <li class="page-item" [class.disabled]="currentPage === totalPages - 1">
+          <button class="page-link" (click)="goToPage(currentPage + 1)"><i class="bi bi-chevron-right"></i></button>
+        </li>
+      </ul>
+    </nav>
+  </div>
+
+</div>
+
+<!-- Delete Confirmation Modal -->
+<div class="modal-backdrop-custom" *ngIf="productToDelete">
+  <div class="confirm-modal">
+    <div class="confirm-modal-header">
+      <i class="bi bi-exclamation-triangle-fill text-danger"></i>
+      <h6>Confirm Delete</h6>
+    </div>
+    <p>Are you sure you want to delete <strong>{{ productToDelete.productName }}</strong>? This action cannot be undone.</p>
+    <div class="confirm-modal-actions">
+      <button class="btn btn-secondary btn-sm" (click)="cancelDelete()">Cancel</button>
+      <button class="btn btn-danger btn-sm" (click)="executeDelete()">Delete</button>
+    </div>
+  </div>
+</div>

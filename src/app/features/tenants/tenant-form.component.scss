@@ -1,0 +1,15 @@
+.form-header {
+  display: flex;
+  align-items: center;
+  h5 { font-size: 20px; font-weight: 600; color: #1e3a5f; margin: 0; }
+}
+
+.form-label { font-weight: 500; color: #444; }
+
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  padding-top: 16px;
+  border-top: 1px solid #e9ecef;
+}

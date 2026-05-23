@@ -1,0 +1,158 @@
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+
+  .page-title {
+    font-size: 20px;
+    font-weight: 600;
+    color: #1e3a5f;
+    margin-bottom: 2px;
+  }
+
+  .header-actions {
+    display: flex;
+    gap: 8px;
+  }
+}
+
+// ── Search ───────────────────────────────────────
+.search-bar {
+  max-width: 500px;
+}
+
+// ── Filter panel ─────────────────────────────────
+.filter-panel-inner {
+  background: #f8f9fa;
+  border: 1px solid #e9ecef;
+  border-radius: 8px;
+  padding: 16px;
+
+  h6 {
+    font-weight: 600;
+    color: #1e3a5f;
+    margin-bottom: 12px;
+  }
+}
+
+// ── Table ─────────────────────────────────────────
+.table-wrapper {
+  overflow-x: auto;
+}
+
+.sortable {
+  cursor: pointer;
+  user-select: none;
+  white-space: nowrap;
+
+  &:hover {
+    background-color: #e9ecef;
+  }
+
+  i {
+    font-size: 11px;
+    opacity: 0.5;
+    margin-left: 4px;
+  }
+}
+
+.product-name {
+  font-weight: 500;
+  color: #1e3a5f;
+}
+
+// Quantity badge — color coded by stock level
+.quantity-badge {
+  display: inline-block;
+  padding: 2px 10px;
+  border-radius: 12px;
+  font-size: 13px;
+  font-weight: 600;
+
+  &.low    { background: #fde8e8; color: #dc3545; }
+  &.medium { background: #fff3cd; color: #856404; }
+  &.high   { background: #d1e7dd; color: #146c43; }
+}
+
+// Small action buttons
+.action-buttons {
+  display: flex;
+  gap: 4px;
+}
+
+.btn-xs {
+  padding: 3px 8px;
+  font-size: 12px;
+  line-height: 1.4;
+}
+
+// ── Empty state ───────────────────────────────────
+.empty-state {
+  text-align: center;
+  padding: 60px 20px;
+  color: #adb5bd;
+
+  i {
+    font-size: 48px;
+    display: block;
+    margin-bottom: 12px;
+  }
+
+  p {
+    font-size: 16px;
+    margin-bottom: 16px;
+  }
+}
+
+// ── Pagination ────────────────────────────────────
+.pagination-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid #e9ecef;
+
+  .pagination-info {
+    font-size: 13px;
+    color: #6c757d;
+  }
+}
+
+// ── Delete Confirmation Modal ──────────────────────
+.modal-backdrop-custom {
+  position: fixed;
+  inset: 0;                          // shorthand for top/right/bottom/left = 0
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.confirm-modal {
+  background: white;
+  border-radius: 12px;
+  padding: 28px;
+  max-width: 400px;
+  width: 90%;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+
+  .confirm-modal-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 12px;
+
+    i { font-size: 22px; }
+    h6 { margin: 0; font-weight: 600; }
+  }
+
+  p { color: #555; margin-bottom: 20px; }
+
+  .confirm-modal-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+  }
+}
