@@ -57,6 +57,10 @@
               "node_modules/bootstrap-icons/font/bootstrap-icons.css",
               "src/styles.scss"
             ],
+            "assets": [
+                "src/favicon.ico",
+                "src/assets"
+            ],
             "scripts": [
               "node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"
             ]

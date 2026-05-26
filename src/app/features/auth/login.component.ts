@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -16,11 +16,14 @@ export class LoginComponent implements OnInit {
   loginForm: FormGroup;
   isLoading = false;
   errorMessage = '';
+  isSessionExpired = false;
+  showPassword = false;
 
   constructor(
     private fb: FormBuilder,
     private authService: AuthService,
-    private router: Router
+    private router: Router,
+    private cdr: ChangeDetectorRef
   ) {
     this.loginForm = this.fb.group({
       username: ['', [Validators.required]],
@@ -29,21 +32,23 @@ export class LoginComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    // If already logged in — skip login page
     if (this.authService.isLoggedIn()) {
       this.router.navigate(['/dashboard']);
       return;
     }
 
-    // Show session expired message if redirected from error interceptor
     if (localStorage.getItem('session_expired')) {
-      this.errorMessage = 'Your session has expired. Please login again.';
+      this.isSessionExpired = true;
       localStorage.removeItem('session_expired');
     }
   }
 
   get f() {
     return this.loginForm.controls;
+  }
+
+  togglePassword(): void {
+    this.showPassword = !this.showPassword;
   }
 
   onSubmit(): void {
@@ -54,21 +59,22 @@ export class LoginComponent implements OnInit {
 
     this.isLoading = true;
     this.errorMessage = '';
+    this.isSessionExpired = false;
 
     this.authService.login(this.loginForm.value).subscribe({
       next: (response) => {
         if (response.success && response.data?.token) {
-          // Navigate after current JS execution completes
-          // ensuring localStorage write finishes before dashboard loads
           setTimeout(() => {
             this.router.navigate(['/dashboard']);
           }, 0);
         }
         this.isLoading = false;
+        this.cdr.detectChanges();
       },
       error: (err) => {
         this.errorMessage = err.error?.message || 'Invalid username or password';
         this.isLoading = false;
+        this.cdr.detectChanges();
       }
     });
   }
