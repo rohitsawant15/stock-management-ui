@@ -60,10 +60,13 @@
           <label class="form-label">Username</label>
           <div class="input-wrapper">
             <i class="bi bi-person input-icon"></i>
-            <input type="text" class="form-control" formControlName="username" placeholder="Enter your username" [class.is-invalid]="f['username'].invalid && f['username'].touched" />
+            <input type="text" class="form-control" formControlName="username" pattern="^[a-zA-Z0-9._-]+$" placeholder="Enter your username" [class.is-invalid]="f['username'].invalid && f['username'].touched" />
           </div>
           <div class="invalid-hint" *ngIf="f['username'].errors?.['required'] && f['username'].touched">
             Username is required
+          </div>
+          <div class="invalid-hint" *ngIf="f['username'].errors?.['pattern'] && f['username'].touched">
+            Username can only contain letters, numbers, dots, underscores, and hyphens
           </div>
         </div>
 

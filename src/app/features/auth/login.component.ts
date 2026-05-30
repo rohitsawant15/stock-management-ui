@@ -26,7 +26,7 @@ export class LoginComponent implements OnInit {
     private cdr: ChangeDetectorRef
   ) {
     this.loginForm = this.fb.group({
-      username: ['', [Validators.required]],
+      username: ['', [Validators.required, Validators.pattern(/^[a-zA-Z0-9._-]+$/)]],
       password: ['', [Validators.required, Validators.minLength(4)]]
     });
   }
