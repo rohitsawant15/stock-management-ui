@@ -1,7 +1,7 @@
 import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { RouterModule } from '@angular/router';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { StockService } from '../../core/services/stock.service';
 import { ProductService } from '../../core/services/product.service';
 import { ProductResponse } from '../../shared/models/product.model';
@@ -33,7 +33,8 @@ export class StockOperationComponent implements OnInit {
     private fb: FormBuilder,
     private stockService: StockService,
     private productService: ProductService,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private route: ActivatedRoute
   ) {
     this.stockForm = this.fb.group({
       productId: [null, [Validators.required]],
@@ -42,6 +43,11 @@ export class StockOperationComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.route.queryParams.subscribe(params => {
+      if (params['type'] === 'ADD' || params['type'] === 'REDUCE') {
+        this.activeOperation = params['type'] as StockOperationType;
+      }
+    });
     this.loadAllProducts();
   }
 

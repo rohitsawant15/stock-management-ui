@@ -1,6 +1,6 @@
 import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterModule } from '@angular/router';
+import { ActivatedRoute, RouterModule } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { ProductService } from '../../core/services/product.service';
 import { AuthService } from '../../core/services/auth.service';
@@ -39,15 +39,16 @@ export class ProductListComponent implements OnInit {
   canEdit = false;
   canDelete = false;
   isExporting = false;
+  canExport = false;
+  showLowStockOnly = false;
 
   constructor(
     private productService: ProductService,
     private authService: AuthService,
     private exportService: ExportService,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private route: ActivatedRoute
   ) {}
-
-  canExport = false;
 
   ngOnInit(): void {
     const role = this.authService.getUserRole();
@@ -55,7 +56,11 @@ export class ProductListComponent implements OnInit {
     this.canEdit   = ['SUPER_ADMIN', 'ADMIN', 'MANAGER'].includes(role || '');
     this.canDelete = ['SUPER_ADMIN', 'ADMIN'].includes(role || '');
     this.canExport = ['SUPER_ADMIN', 'ADMIN', 'MANAGER', 'INVENTORY_OPERATOR'].includes(role || '');
-    this.loadProducts();
+
+    this.route.queryParams.subscribe(params => {
+      this.showLowStockOnly = params['filter'] === 'lowStock';
+      this.loadProducts();
+    });
   }
 
   loadProducts(): void {
@@ -63,9 +68,12 @@ export class ProductListComponent implements OnInit {
     this.errorMessage = '';
     this.isSearching = false;
     this.isFiltering = false;
+
     this.productService.getAllProducts(this.currentPage, this.pageSize, this.sortBy, this.sortDirection).subscribe({
       next: (res) => {
-        this.products = res.data.content;
+        this.products = this.showLowStockOnly
+          ? res.data.content.filter((p: ProductResponse) => p.quantity <= 10)
+          : res.data.content;
         this.totalPages = res.data.totalPages;
         this.totalElements = res.data.totalElements;
         this.isLoading = false;

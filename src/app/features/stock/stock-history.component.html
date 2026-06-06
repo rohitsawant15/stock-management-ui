@@ -3,117 +3,219 @@
   <!-- Header -->
   <div class="page-header">
     <div>
-      <h5 class="page-title">Stock History</h5>
-      <small class="text-muted">View all stock operations for a product</small>
+      <h5 class="page-title">
+        <ng-container *ngIf="isDashboardMode">
+          {{ filterType === 'ADD' ? 'Stock Added' : 'Stock Reduced' }} — All Products
+        </ng-container>
+        <ng-container *ngIf="!isDashboardMode">Stock History</ng-container>
+      </h5>
+      <small class="text-muted">
+        <ng-container *ngIf="isDashboardMode">
+          Showing all {{ filterType === 'ADD' ? 'ADD' : 'REDUCE' }} operations across every product
+        </ng-container>
+        <ng-container *ngIf="!isDashboardMode">
+          View all stock operations for a product
+        </ng-container>
+      </small>
     </div>
     <a routerLink="/stock" class="btn btn-outline-secondary btn-sm">
       <i class="bi bi-arrow-left me-1"></i> Back to Operations
     </a>
   </div>
 
-  <!-- Product Selector -->
-  <div class="selector-row mt-4">
-    <div class="row g-2 align-items-end">
-      <div class="col-md-6">
-        <label class="form-label">Select Product</label>
-        <app-searchable-dropdown
-          [options]="productOptions"
-          [value]="selectedProductId"
-          [loading]="isLoadingProducts"
-          placeholder="-- Select a product --"
-          (valueChange)="onProductSelected($event)"
-        ></app-searchable-dropdown>
+  <!-- DASHBOARD MODE: no product selector, show all products table -->
+  <ng-container *ngIf="isDashboardMode">
+
+    <!-- Loading -->
+    <div class="text-center py-5" *ngIf="isLoadingHistory || isLoadingProducts">
+      <div class="spinner-border text-primary"></div>
+      <p class="mt-2 text-muted">Loading history...</p>
+    </div>
+
+    <!-- Summary Cards -->
+    <div class="summary-row mt-4" *ngIf="!isLoadingHistory && allProductsHistory.length > 0">
+      <div class="summary-card total">
+        <span class="summary-label">Showing</span>
+        <span class="summary-value">{{ filteredHistory.length }}</span>
       </div>
-      <div class="col-md-3" *ngIf="historyList.length > 0">
-        <label class="form-label">Filter by Type</label>
-        <select class="form-select" [(ngModel)]="filterType">
-          <option value="ALL">All Operations</option>
-          <option value="ADD">Add Only</option>
-          <option value="REDUCE">Reduce Only</option>
-        </select>
+      <div class="summary-card add">
+        <span class="summary-label">Total Added</span>
+        <span class="summary-value">{{ addCount }}</span>
+      </div>
+      <div class="summary-card reduce">
+        <span class="summary-label">Total Reduced</span>
+        <span class="summary-value">{{ reduceCount }}</span>
       </div>
     </div>
-  </div>
 
-  <!-- Error -->
-  <div class="alert alert-danger mt-3" *ngIf="errorMessage">
-    <i class="bi bi-exclamation-triangle me-2"></i>{{ errorMessage }}
-  </div>
-
-  <!-- Loading -->
-  <div class="text-center py-5" *ngIf="isLoadingHistory">
-    <div class="spinner-border text-primary"></div>
-    <p class="mt-2 text-muted">Loading history...</p>
-  </div>
-
-  <!-- Summary Cards -->
-  <div class="summary-row mt-4" *ngIf="historyList.length > 0 && !isLoadingHistory">
-    <div class="summary-card total">
-      <span class="summary-label">Total Operations</span>
-      <span class="summary-value">{{ historyList.length }}</span>
+    <!-- All Products History Table -->
+    <div class="table-wrapper mt-3" *ngIf="!isLoadingHistory && filteredHistory.length > 0">
+      <table class="table table-hover">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Date &amp; Time</th>
+            <th>Product</th>
+            <th>Operation</th>
+            <th>Qty Changed</th>
+            <th>Before</th>
+            <th>After</th>
+            <th>Change</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let item of filteredHistory; let i = index">
+            <td class="text-muted">{{ i + 1 }}</td>
+            <td class="datetime">{{ item.operationTime | date:'dd MMM yyyy, hh:mm a' }}</td>
+            <td>
+              <span class="fw-semibold">{{ item.productName }}</span>
+              <small class="text-muted ms-1">({{ item.productCode }})</small>
+            </td>
+            <td>
+              <span class="op-badge add" *ngIf="item.operationType === 'ADD'">
+                <i class="bi bi-plus-circle-fill me-1"></i> ADD
+              </span>
+              <span class="op-badge reduce" *ngIf="item.operationType === 'REDUCE'">
+                <i class="bi bi-dash-circle-fill me-1"></i> REDUCE
+              </span>
+            </td>
+            <td class="fw-semibold">{{ item.quantityChanged }}</td>
+            <td class="text-muted">{{ item.previousQuantity }}</td>
+            <td class="fw-semibold">{{ item.newQuantity }}</td>
+            <td>
+              <span class="change-badge positive" *ngIf="item.operationType === 'ADD'">
+                +{{ item.quantityChanged }}
+              </span>
+              <span class="change-badge negative" *ngIf="item.operationType === 'REDUCE'">
+                -{{ item.quantityChanged }}
+              </span>
+            </td>
+          </tr>
+        </tbody>
+      </table>
     </div>
-    <div class="summary-card add">
-      <span class="summary-label">Stock Added</span>
-      <span class="summary-value">{{ addCount }}</span>
-    </div>
-    <div class="summary-card reduce">
-      <span class="summary-label">Stock Reduced</span>
-      <span class="summary-value">{{ reduceCount }}</span>
-    </div>
-    <div class="summary-card stock">
-      <span class="summary-label">Current Stock</span>
-      <span class="summary-value">{{ selectedProduct?.quantity ?? '—' }}</span>
-    </div>
-  </div>
 
-  <!-- History Table -->
-  <div class="table-wrapper mt-3" *ngIf="!isLoadingHistory && filteredHistory.length > 0">
-    <table class="table table-hover">
-      <thead>
-        <tr>
-          <th>#</th>
-          <th>Date &amp; Time</th>
-          <th>Operation</th>
-          <th>Qty Changed</th>
-          <th>Before</th>
-          <th>After</th>
-          <th>Change</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr *ngFor="let item of filteredHistory; let i = index">
-          <td class="text-muted">{{ i + 1 }}</td>
-          <td class="datetime">{{ item.operationTime | date:'dd MMM yyyy, hh:mm a' }}</td>
-          <td>
-            <span class="op-badge add" *ngIf="item.operationType === 'ADD'">
-              <i class="bi bi-plus-circle-fill me-1"></i> ADD
-            </span>
-            <span class="op-badge reduce" *ngIf="item.operationType === 'REDUCE'">
-              <i class="bi bi-dash-circle-fill me-1"></i> REDUCE
-            </span>
-          </td>
-          <td class="fw-semibold">{{ item.quantityChanged }}</td>
-          <td class="text-muted">{{ item.previousQuantity }}</td>
-          <td class="fw-semibold">{{ item.newQuantity }}</td>
-          <td>
-            <span class="change-badge positive" *ngIf="item.operationType === 'ADD'">+{{ item.quantityChanged }}</span>
-            <span class="change-badge negative" *ngIf="item.operationType === 'REDUCE'">-{{ item.quantityChanged }}</span>
-          </td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
+    <!-- Empty -->
+    <div class="empty-state" *ngIf="!isLoadingHistory && !isLoadingProducts && filteredHistory.length === 0">
+      <i class="bi bi-clock-history"></i>
+      <p>No {{ filterType === 'ADD' ? 'stock add' : 'stock reduce' }} operations found</p>
+    </div>
 
-  <!-- Empty -->
-  <div class="empty-state" *ngIf="!isLoadingHistory && selectedProductId && filteredHistory.length === 0">
-    <i class="bi bi-clock-history"></i>
-    <p>No stock history found for this product</p>
-  </div>
+  </ng-container>
 
-  <!-- No product selected -->
-  <div class="empty-state" *ngIf="!selectedProductId && !isLoadingHistory">
-    <i class="bi bi-arrow-up-circle"></i>
-    <p>Select a product to view its stock history</p>
-  </div>
+  <!-- NORMAL MODE: product selector view (unchanged) -->
+  <ng-container *ngIf="!isDashboardMode">
+
+    <!-- Product Selector -->
+    <div class="selector-row mt-4">
+      <div class="row g-2 align-items-end">
+        <div class="col-md-6">
+          <label class="form-label">Select Product</label>
+          <app-searchable-dropdown
+            [options]="productOptions"
+            [value]="selectedProductId"
+            [loading]="isLoadingProducts"
+            placeholder="-- Select a product --"
+            (valueChange)="onProductSelected($event)"
+          ></app-searchable-dropdown>
+        </div>
+        <div class="col-md-3" *ngIf="historyList.length > 0">
+          <label class="form-label">Filter by Type</label>
+          <select class="form-select" [(ngModel)]="filterType">
+            <option value="ALL">All Operations</option>
+            <option value="ADD">Add Only</option>
+            <option value="REDUCE">Reduce Only</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <!-- Error -->
+    <div class="alert alert-danger mt-3" *ngIf="errorMessage">
+      <i class="bi bi-exclamation-triangle me-2"></i>{{ errorMessage }}
+    </div>
+
+    <!-- Loading -->
+    <div class="text-center py-5" *ngIf="isLoadingHistory">
+      <div class="spinner-border text-primary"></div>
+      <p class="mt-2 text-muted">Loading history...</p>
+    </div>
+
+    <!-- Summary Cards -->
+    <div class="summary-row mt-4" *ngIf="historyList.length > 0 && !isLoadingHistory">
+      <div class="summary-card total">
+        <span class="summary-label">Total Operations</span>
+        <span class="summary-value">{{ historyList.length }}</span>
+      </div>
+      <div class="summary-card add">
+        <span class="summary-label">Stock Added</span>
+        <span class="summary-value">{{ addCount }}</span>
+      </div>
+      <div class="summary-card reduce">
+        <span class="summary-label">Stock Reduced</span>
+        <span class="summary-value">{{ reduceCount }}</span>
+      </div>
+      <div class="summary-card stock">
+        <span class="summary-label">Current Stock</span>
+        <span class="summary-value">{{ selectedProduct?.quantity ?? '—' }}</span>
+      </div>
+    </div>
+
+    <!-- History Table -->
+    <div class="table-wrapper mt-3" *ngIf="!isLoadingHistory && filteredHistory.length > 0">
+      <table class="table table-hover">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Date &amp; Time</th>
+            <th>Operation</th>
+            <th>Qty Changed</th>
+            <th>Before</th>
+            <th>After</th>
+            <th>Change</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let item of filteredHistory; let i = index">
+            <td class="text-muted">{{ i + 1 }}</td>
+            <td class="datetime">{{ item.operationTime | date:'dd MMM yyyy, hh:mm a' }}</td>
+            <td>
+              <span class="op-badge add" *ngIf="item.operationType === 'ADD'">
+                <i class="bi bi-plus-circle-fill me-1"></i> ADD
+              </span>
+              <span class="op-badge reduce" *ngIf="item.operationType === 'REDUCE'">
+                <i class="bi bi-dash-circle-fill me-1"></i> REDUCE
+              </span>
+            </td>
+            <td class="fw-semibold">{{ item.quantityChanged }}</td>
+            <td class="text-muted">{{ item.previousQuantity }}</td>
+            <td class="fw-semibold">{{ item.newQuantity }}</td>
+            <td>
+              <span class="change-badge positive" *ngIf="item.operationType === 'ADD'">
+                +{{ item.quantityChanged }}
+              </span>
+              <span class="change-badge negative" *ngIf="item.operationType === 'REDUCE'">
+                -{{ item.quantityChanged }}
+              </span>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Empty -->
+    <div class="empty-state"
+         *ngIf="!isLoadingHistory && selectedProductId && filteredHistory.length === 0">
+      <i class="bi bi-clock-history"></i>
+      <p>No stock history found for this product</p>
+    </div>
+
+    <!-- No product selected -->
+    <div class="empty-state" *ngIf="!selectedProductId && !isLoadingHistory">
+      <i class="bi bi-arrow-up-circle"></i>
+      <p>Select a product to view its stock history</p>
+    </div>
+
+  </ng-container>
 
 </div>

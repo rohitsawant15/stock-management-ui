@@ -1,7 +1,7 @@
 import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { RouterModule } from '@angular/router';
+import { ActivatedRoute, RouterModule } from '@angular/router';
 import { StockService } from '../../core/services/stock.service';
 import { ProductService } from '../../core/services/product.service';
 import { StockHistoryResponse } from '../../shared/models/stock.model';
@@ -23,21 +23,36 @@ export class StockHistoryComponent implements OnInit {
   selectedProductId: number | null = null;
   selectedProduct: ProductResponse | null = null;
   historyList: StockHistoryResponse[] = [];
+  allProductsHistory: StockHistoryResponse[] = [];
   isLoadingHistory = false;
   errorMessage = '';
   filterType: 'ALL' | 'ADD' | 'REDUCE' = 'ALL';
 
+  // dashboard mode = show all products history filtered by type
+  isDashboardMode = false;
+
   constructor(
     private stockService: StockService,
     private productService: ProductService,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private route: ActivatedRoute
   ) {}
 
   ngOnInit(): void {
-    this.loadProducts();
+    this.route.queryParams.subscribe(params => {
+      if (params['type'] === 'ADD' || params['type'] === 'REDUCE') {
+        this.isDashboardMode = true;
+        this.filterType = params['type'] as 'ADD' | 'REDUCE';
+        this.loadProducts(() => this.loadAllProductsHistory());
+      } else {
+        this.isDashboardMode = false;
+        this.filterType = 'ALL';
+        this.loadProducts();
+      }
+    });
   }
 
-  loadProducts(): void {
+  loadProducts(callback?: () => void): void {
     this.isLoadingProducts = true;
     this.productService.getAllProductsForDropdown().subscribe({
       next: (products) => {
@@ -50,12 +65,57 @@ export class StockHistoryComponent implements OnInit {
         }));
         this.isLoadingProducts = false;
         this.cdr.detectChanges();
+        if (callback) callback();
       },
       error: () => {
         this.errorMessage = 'Failed to load products';
         this.isLoadingProducts = false;
         this.cdr.detectChanges();
       }
+    });
+  }
+
+  // Loads history for ALL products and merges into one list
+  loadAllProductsHistory(): void {
+    if (!this.products.length) return;
+    this.isLoadingHistory = true;
+    this.errorMessage = '';
+    this.allProductsHistory = [];
+
+    let completed = 0;
+    const total = this.products.length;
+    const merged: StockHistoryResponse[] = [];
+
+    this.products.forEach(product => {
+      this.stockService.getStockHistory(product.id).subscribe({
+        next: (res) => {
+          // Tag each record with product name for display
+          const tagged = res.data.map(h => ({
+            ...h,
+            productName: product.productName,
+            productCode: product.productCode
+          }));
+          merged.push(...tagged);
+          completed++;
+          if (completed === total) {
+            this.allProductsHistory = merged.sort((a, b) =>
+              new Date(b.operationTime).getTime() - new Date(a.operationTime).getTime()
+            );
+            this.isLoadingHistory = false;
+            this.cdr.detectChanges();
+          }
+        },
+        error: () => {
+          completed++;
+          if (completed === total) {
+            this.allProductsHistory = merged.sort((a, b) =>
+              new Date(b.operationTime).getTime() - new Date(a.operationTime).getTime()
+            );
+            this.isLoadingHistory = false;
+            this.cdr.detectChanges();
+          }
+        }
+      });
     });
   }
 
@@ -93,15 +153,20 @@ export class StockHistoryComponent implements OnInit {
   }
 
   get filteredHistory(): StockHistoryResponse[] {
+    if (this.isDashboardMode) {
+      return this.allProductsHistory.filter(h => h.operationType === this.filterType);
+    }
     if (this.filterType === 'ALL') return this.historyList;
     return this.historyList.filter(h => h.operationType === this.filterType);
   }
 
   get addCount(): number {
-    return this.historyList.filter(h => h.operationType === 'ADD').length;
+    const list = this.isDashboardMode ? this.allProductsHistory : this.historyList;
+    return list.filter(h => h.operationType === 'ADD').length;
   }
 
   get reduceCount(): number {
-    return this.historyList.filter(h => h.operationType === 'REDUCE').length;
+    const list = this.isDashboardMode ? this.allProductsHistory : this.historyList;
+    return list.filter(h => h.operationType === 'REDUCE').length;
   }
 }

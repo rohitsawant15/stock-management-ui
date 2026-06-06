@@ -1,6 +1,6 @@
 import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterModule } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { AuthService } from '../../core/services/auth.service';
 import { DashboardService } from '../../core/services/dashboard.service';
 import { DashboardSummary } from '../../shared/models/api-response.model';
@@ -27,13 +27,24 @@ export class DashboardComponent implements OnInit {
   constructor(
     private authService: AuthService,
     private dashboardService: DashboardService,
-    private cdr: ChangeDetectorRef   // ← forces Angular to re-render
+    private cdr: ChangeDetectorRef, // ← forces Angular to re-render
+    private router: Router   
   ) {}
 
   ngOnInit(): void {
     this.initUser();
     this.loadSummary();
   }
+
+permissionError = false;
+
+showPermissionError(): void {
+  this.permissionError = true;
+  setTimeout(() => {
+    this.permissionError = false;
+    this.cdr.detectChanges();
+  }, 3000);
+}
 
   initUser(): void {
     const user = this.authService.getUser();
@@ -60,4 +71,7 @@ export class DashboardComponent implements OnInit {
       }
     });
   }
+  navigateTo(path: string, queryParams?: Record<string, string>): void {
+  this.router.navigate([path], { queryParams });
+}
 }
