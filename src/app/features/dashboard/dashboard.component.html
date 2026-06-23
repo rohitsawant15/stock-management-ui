@@ -22,16 +22,16 @@
   </div>
 
   <!-- Permission Error -->
-<div class="alert alert-warning alert-dismissible fade show" *ngIf="permissionError">
-  <i class="bi bi-shield-exclamation me-2"></i>
-  Your role (<strong>{{ userRole }}</strong>) does not have permission to view stock operations.
-  <button type="button" class="btn-close" (click)="permissionError = false"></button>
-</div>
+  <div class="alert alert-warning alert-dismissible fade show" *ngIf="permissionError">
+    <i class="bi bi-shield-exclamation me-2"></i>
+    Your role (<strong>{{ userRole }}</strong>) does not have permission to view stock operations.
+    <button type="button" class="btn-close" (click)="permissionError = false"></button>
+  </div>
 
-  <!-- Stat Cards -->
+  <!-- Stat Cards Row 1 -->
   <div class="row g-3 mb-4">
 
-    <div class="col-md-3">
+    <div class="col-md">
       <div class="stat-card page-card"
            (click)="navigateTo('/products')"
            style="cursor:pointer">
@@ -46,7 +46,7 @@
       </div>
     </div>
 
-    <div class="col-md-3">
+    <div class="col-md">
       <div class="stat-card page-card"
            (click)="canAddStock ? navigateTo('/stock/history', {type: 'ADD'}) : showPermissionError()"
            style="cursor:pointer">
@@ -61,8 +61,8 @@
       </div>
     </div>
 
-    <div class="col-md-3">
-       <div class="stat-card page-card"
+    <div class="col-md">
+      <div class="stat-card page-card"
            (click)="canAddStock ? navigateTo('/stock/history', {type: 'REDUCE'}) : showPermissionError()"
            style="cursor:pointer">
         <div class="stat-icon bg-warning-soft">
@@ -76,7 +76,7 @@
       </div>
     </div>
 
-    <div class="col-md-3">
+    <div class="col-md">
       <div class="stat-card page-card"
            (click)="navigateTo('/products', {filter: 'lowStock'})"
            style="cursor:pointer">
@@ -91,13 +91,27 @@
       </div>
     </div>
 
+    <!-- Inventory Value — separate card, correct position -->
+    <div class="col-md">
+      <div class="stat-card page-card">
+        <div class="stat-icon bg-success-soft">
+          <i class="bi bi-currency-rupee text-success"></i>
+        </div>
+        <div class="stat-info">
+          <p>Inventory Value</p>
+          <h3 *ngIf="!isLoading">{{ summary?.totalInventoryValue | currency:'INR':'symbol':'1.2-2' }}</h3>
+          <div class="spinner-border spinner-border-sm text-success" *ngIf="isLoading"></div>
+        </div>
+      </div>
+    </div>
+
   </div>
 
-  <!-- Total Users card + Quick links -->
+  <!-- Row 2: Total Users + Quick Actions -->
   <div class="row g-3">
 
     <div class="col-md-3">
-       <div class="stat-card page-card"
+      <div class="stat-card page-card"
            (click)="navigateTo('/users')"
            style="cursor:pointer">
         <div class="stat-icon bg-info-soft">
@@ -115,30 +129,27 @@
       <div class="page-card h-100">
         <h6 class="mb-3">Quick Actions</h6>
         <div class="d-flex gap-2 flex-wrap">
-       <!-- View Products — always accessible -->
-    <a routerLink="/products" class="btn btn-outline-primary btn-sm">
-      <i class="bi bi-box-seam me-1"></i> View Products
-    </a>
+          <a routerLink="/products" class="btn btn-outline-primary btn-sm">
+            <i class="bi bi-box-seam me-1"></i> View Products
+          </a>
           <span
-      class="btn btn-outline-success btn-sm disabled-action"
-      *ngIf="!canAddStock"
-      title="Your role ({{ userRole }}) cannot perform stock operations"
-    >
-      <i class="bi bi-plus-circle me-1"></i> Add Stock
-    </span>
-    <a routerLink="/stock" class="btn btn-outline-success btn-sm" *ngIf="canAddStock">
-      <i class="bi bi-plus-circle me-1"></i> Add Stock
-    </a>
+            class="btn btn-outline-success btn-sm disabled-action"
+            *ngIf="!canAddStock"
+            title="Your role ({{ userRole }}) cannot perform stock operations">
+            <i class="bi bi-plus-circle me-1"></i> Add Stock
+          </span>
+          <a routerLink="/stock" class="btn btn-outline-success btn-sm" *ngIf="canAddStock">
+            <i class="bi bi-plus-circle me-1"></i> Add Stock
+          </a>
           <span
-      class="btn btn-outline-secondary btn-sm disabled-action"
-      *ngIf="!canViewHistory"
-      title="Your role ({{ userRole }}) cannot view stock history"
-    >
-      <i class="bi bi-clock-history me-1"></i> Stock History
-    </span>
-    <a routerLink="/stock/history" class="btn btn-outline-secondary btn-sm" *ngIf="canViewHistory">
-      <i class="bi bi-clock-history me-1"></i> Stock History
-    </a>
+            class="btn btn-outline-secondary btn-sm disabled-action"
+            *ngIf="!canViewHistory"
+            title="Your role ({{ userRole }}) cannot view stock history">
+            <i class="bi bi-clock-history me-1"></i> Stock History
+          </span>
+          <a routerLink="/stock/history" class="btn btn-outline-secondary btn-sm" *ngIf="canViewHistory">
+            <i class="bi bi-clock-history me-1"></i> Stock History
+          </a>
           <a routerLink="/users" class="btn btn-outline-info btn-sm">
             <i class="bi bi-people me-1"></i> Manage Users
           </a>

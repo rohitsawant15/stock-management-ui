@@ -97,6 +97,7 @@
           <th>Type</th>
           <th class="sortable" (click)="onSort('rate')">Rate <i class="bi bi-arrow-down-up"></i></th>
           <th class="sortable" (click)="onSort('quantity')">Quantity <i class="bi bi-arrow-down-up"></i></th>
+          <th>Total Amount</th>
           <th>Volume</th>
           <th *ngIf="canEdit || canDelete">Actions</th>
         </tr>
@@ -116,6 +117,7 @@
             <span class="quantity-badge medium" *ngIf="product.quantity >= 10 && product.quantity < 50">{{ product.quantity }}</span>
             <span class="quantity-badge high" *ngIf="product.quantity >= 50">{{ product.quantity }}</span>
           </td>
+          <td class="fw-semibold text-success">{{ product.rate * product.quantity | currency:'INR':'symbol':'1.2-2' }}</td>
           <td>{{ product.volume ?? '—' }}</td>
           <td *ngIf="canEdit || canDelete">
             <div class="action-buttons">

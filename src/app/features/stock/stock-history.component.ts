@@ -169,4 +169,9 @@ export class StockHistoryComponent implements OnInit {
     const list = this.isDashboardMode ? this.allProductsHistory : this.historyList;
     return list.filter(h => h.operationType === 'REDUCE').length;
   }
+  
+  getProductRate(productId: number): number {
+  const product = this.products.find(p => p.id === productId);
+  return product?.rate ?? 0;
+}
 }

@@ -20,4 +20,5 @@ export interface DashboardSummary {
   totalStockAdds: number;
   totalStockReduces: number;
   lowStockProducts: number;
+  totalInventoryValue: number;
 }

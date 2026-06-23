@@ -117,6 +117,12 @@
             <span class="stock-qty medium" *ngIf="selectedProduct.quantity >= 10 && selectedProduct.quantity < 50">{{ selectedProduct.quantity }} units</span>
             <span class="stock-qty high" *ngIf="selectedProduct.quantity >= 50">{{ selectedProduct.quantity }} units</span>
           </div>
+          <div class="preview-row">
+  <span class="preview-label">Total Amount</span>
+  <span class="preview-value fw-semibold text-success">
+    {{ selectedProduct.rate * selectedProduct.quantity | currency:'INR':'symbol':'1.2-2' }}
+  </span>
+</div>
         </div>
 
         <!-- Projection -->
@@ -136,6 +142,15 @@
                 : selectedProduct.quantity - +stockForm.value.quantity }}
             </strong>
           </div>
+          <div class="projection-row mt-2">
+  <span>Total Amount After</span>
+  <strong class="text-success" *ngIf="activeOperation === 'ADD'">
+    {{ selectedProduct.rate * (selectedProduct.quantity + +stockForm.value.quantity) | currency:'INR':'symbol':'1.2-2' }}
+  </strong>
+  <strong class="text-danger" *ngIf="activeOperation === 'REDUCE'">
+    {{ selectedProduct.rate * (selectedProduct.quantity - +stockForm.value.quantity) | currency:'INR':'symbol':'1.2-2' }}
+  </strong>
+</div>
           <small class="text-danger d-block mt-1" *ngIf="activeOperation === 'REDUCE' && (selectedProduct.quantity - +stockForm.value.quantity) < 0">
             <i class="bi bi-exclamation-triangle me-1"></i> Quantity cannot go below 0
           </small>
